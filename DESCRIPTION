@@ -1,0 +1,14 @@
+Package: BSFate
+Type: Package
+Title: An ODE-Based Framework for Identifying Regulatory Modules from Single-Cell RNA Sequencing Data
+Version: 0.1.0
+Date: 2025-02-16
+Author: Yumiao Hou
+Maintainer: Yumiao Hou <786869096@qq.com>
+Description: 
+  BSFate is an ODE-based framework designed to identify regulatory modules 
+  from single-cell RNA sequencing (scRNA-seq) data. 
+License: GPL-3
+Encoding: UTF-8
+LazyData: False
+RoxygenNote: 7.3.2
