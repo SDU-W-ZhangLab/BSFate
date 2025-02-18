@@ -205,12 +205,14 @@ bistable_circuitGenes = get_bistable_circuitGenes(scExp_mESC, Switch_TF, Transie
 driver_genes = get_diverGenes(bistable_circuitGenes)
 ```
 
+
 #### Step 6: Gene Modules Identification
 
 ```r
 # Identify gene modules associated with cell fate
 Gene_modules = modulePlot(scExp_mESC, driver_genes)
 ```
+![image](https://github.com/user-attachments/assets/a223a774-ef8a-43d7-954d-41468ad0dab6)
 
 #### Step 7: Gene Modules Analysis
 
@@ -218,19 +220,17 @@ Gene_modules = modulePlot(scExp_mESC, driver_genes)
 # Analyze the gene modules
 module_analysis = get_moduleAnalysis(scExp_mESC, Gene_modules)
 ```
-
+![image](https://github.com/user-attachments/assets/fe5c37fc-c5c7-4226-b9a7-e8a4ed587af5)
 
 ## **Input** **files**
 
 BSfate requires a single-cell RNA-sequencing gene expression object as input. This can include raw counts, as well as normalized counts, as long as normalization preserves ranking of input gene values within a cell. The gene expression matrix takes the following form.
 
-![tupian8](./image/Input.jpg)
 
 ## **Output**
 
 The output of BSfate is TFs and significance score ranking.
 
-![tupian9](./image/Output.jpg)
 
 ## **Authors**
 
