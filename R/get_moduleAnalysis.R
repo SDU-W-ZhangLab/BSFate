@@ -130,8 +130,8 @@ get_moduleAnalysis <- function(data,PPI_gene){
   max_score <- scores[max_index]
   
   
-  cat(sprintf("模块协同表达的最高得分: %.3f\n", max_score))
-  cat(sprintf("发生在时间点: %d\n", max_index))
+  cat(sprintf("The highest score for module collaborative expression: %.3f\n", max_score))
+  cat(sprintf("Time point: %d\n", max_index))
   
   ######################################################
   
@@ -162,8 +162,8 @@ get_moduleAnalysis <- function(data,PPI_gene){
   max_antagonistic_score <- antagonistic_scores[max_antagonistic_index]
   
   
-  cat(sprintf("模块拮抗作用的最高得分: %.3f\n", max_antagonistic_score))
-  cat(sprintf("发生在时间点: %d\n", max_antagonistic_index))
+  cat(sprintf("The highest score for module antagonism: %.3f\n", max_antagonistic_score))
+  cat(sprintf("Time point:%d\n", max_antagonistic_index))
   
   ######################################################
   

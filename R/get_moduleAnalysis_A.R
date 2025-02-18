@@ -11,8 +11,8 @@ get_moduleAnalysis_A <- function(data,Switch_TF,Transient_TF){
   
   
   set.seed(123)
-  module1 <- Transient_TF  # 模块1的基因
-  module2 <- Switch_TF# 模块2的基因
+  module1 <- Transient_TF 
+  module2 <- Switch_TF
   exp_matrix  <- data
   
   
@@ -21,7 +21,7 @@ get_moduleAnalysis_A <- function(data,Switch_TF,Transient_TF){
   exp_matrix12 <- exp_matrix[c(Switch_TF,Transient_TF),c(201:500)]
   exp_matrix24 <- exp_matrix[c(Switch_TF,Transient_TF),c(501:700)]
   exp_matrix36 <- exp_matrix[c(Switch_TF,Transient_TF),c(701:1000)]
-  # 模拟基因表达矩阵
+
   expression_matrix <- list(
     "Time 1" = exp_matrix00,
     "Time 2" = exp_matrix06,
@@ -30,7 +30,7 @@ get_moduleAnalysis_A <- function(data,Switch_TF,Transient_TF){
     "Time 5" = exp_matrix36
   )
   
-  # 计算每个时间点的共表达矩阵
+
   threshold <- 1
   co_expression_matrices <- list()
   
@@ -93,8 +93,8 @@ get_moduleAnalysis_A <- function(data,Switch_TF,Transient_TF){
   ########################### Module Synergy Score.
   
   ################################################## 
-  module1 <- Transient_TF  # 模块1的基因
-  module2 <- Switch_TF# 模块2的基因
+  module1 <- Transient_TF  
+  module2 <- Switch_TF
   exp_matrix  <- data
   
   
@@ -110,24 +110,22 @@ get_moduleAnalysis_A <- function(data,Switch_TF,Transient_TF){
     gene_expr <- exp_matrix_all[[i]]
     module1 <- Switch_TF
     module2 <- Transient_TF
-    
-    # 提取模块基因表达
+
     expr1 <- gene_expr[module1, ]
     expr2 <- gene_expr[module2, ]
     
-    # 计算模块表达水平（每个时间点的均值）
+
     E_M1 <- colMeans(expr1)
     E_M2 <- colMeans(expr2)
     
-    # 参数设置
-    alpha <- 1.0     # 权重：较大性
-    beta <- 0.5      # 权重：均衡性
+    alpha <- 1.0    
+    beta <- 0.5      
     
-    # 计算归一化因子
+
     max_sum <- max(E_M1 + E_M2)
     max_diff <- max(abs(E_M1 - E_M2))
     
-    # 计算协同表达指标
+
     scores <- sapply(seq_along(E_M1), function(i) {
       a <- E_M1[i]
       b <- E_M2[i]
@@ -163,15 +161,15 @@ get_moduleAnalysis_A <- function(data,Switch_TF,Transient_TF){
     module1 <- Switch_TF
     module2 <- Transient_TF
     
-    # 提取模块基因表达
+
     expr1 <- gene_expr[module1, ]
     expr2 <- gene_expr[module2, ]
     
-    # 计算模块表达水平（每个时间点的均值）
+
     E_M1 <- colMeans(expr1)
     E_M2 <- colMeans(expr2)
     
-    # 计算拮抗作用指标
+
     antagonistic_scores <- sapply(seq_along(E_M1), function(i) {
       a <- E_M1[i]
       b <- E_M2[i]
@@ -186,7 +184,7 @@ get_moduleAnalysis_A <- function(data,Switch_TF,Transient_TF){
   
   
   
-  # 绘制箱型图
+
   boxplot(antagonistic_scores_all, col = c("#8ccdbf", "#cde0a5", "#f9db95", "#ef8476", "#c5a8ce"),
           names = c("1-200", "201-400", "401-600", "601-800", "801-1000"),ylab = "antagonistic_scores")
   

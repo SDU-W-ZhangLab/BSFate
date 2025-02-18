@@ -64,7 +64,7 @@ modules_identification <- function(data,ODE_single_results){
     left_join(from_counts_df, by = "from") %>%
     left_join(to_counts_df, by = "to") %>%
     filter(!(from_c == 1 & to_c == 1)) %>%
-    dplyr::select(1, 2, 3)  # 使用 dplyr::select() 显式调用
+    dplyr::select(1, 2, 3)  
   
   
   

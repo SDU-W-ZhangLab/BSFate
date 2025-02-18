@@ -1,26 +1,26 @@
 {
-    "id": "17EC783A",
-    "path": "D:/BSFate/R/get_bistable_circuitTest.R",
-    "project_path": "R/get_bistable_circuitTest.R",
+    "id": "2B32D8A4",
+    "path": "D:/BSFate/example/Example_A.R",
+    "project_path": "example/Example_A.R",
     "type": "r_source",
-    "hash": "2684531085",
+    "hash": "907379050",
     "contents": "",
     "dirty": false,
-    "created": 1739795902262.0,
+    "created": 1739797990748.0,
     "source_on_save": false,
     "relative_order": 1,
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "1,10",
-        "scrollLine": "0"
+        "cursorPosition": "50,0",
+        "scrollLine": "26"
     },
     "folds": "",
-    "lastKnownWriteTime": 1739796333,
+    "lastKnownWriteTime": 1739799244,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1739796333908,
+    "last_content_update": 1739799244471,
     "read_only": false,
     "read_only_alternatives": []
 }
