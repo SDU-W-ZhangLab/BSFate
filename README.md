@@ -47,7 +47,7 @@ Running BSfate is very simple, after loading the library, it only takes four ste
 
 The following shows specific applications on simulated data and two sets of real data.
 
-- Simulated DATASET
+### Simulated DATASET
 
 The switch gene and transient gene of simulated data are used as known data here because of the simple branching of simulated data. Below, we will take Astrocyte lineage as an example.
 
@@ -57,7 +57,7 @@ The switch gene and transient gene of simulated data are used as known data here
 
 
 
-### Step 1 and Step 2: Known Data Acquisition
+#### Step 1 and Step 2: Known Data Acquisition
 
 ```r
 # Load required libraries
@@ -88,7 +88,7 @@ Switch_TF = c("Scl", "Aldh1L", "Hes5", "Stat3")
 Transient_TF = c("Olig2", "Sox8", "Myt1L", "Mash1", "Brn2", "Zic1", "Tuj1")
 ```
 
-### Step 3: Cell Fate Driver Gene Identification
+#### Step 3: Cell Fate Driver Gene Identification
 
 ```r
 # Perform bistable circuit test to identify potential driver genes
@@ -98,14 +98,14 @@ ODE_pair_results = get_bistable_circuitTest(astrocyte_exprs_mat, Switch_TF, Tran
 driver_genes <- get_diverGenes(ODE_pair_results)
 ```
 
-### Step 4: Gene Modules Identification
+#### Step 4: Gene Modules Identification
 
 ```r
 # Identify gene modules associated with cell fate
 Gene_modules <- modules_identification_A(astrocyte_exprs_mat)
 ```
 
-### Step 5: Gene Modules Analysis
+#### Step 5: Gene Modules Analysis
 
 ```r
 # Perform analysis on gene modules with respect to transcription factors
@@ -113,42 +113,110 @@ module_analysis <- get_moduleAnalysis_A(astrocyte_exprs_mat, Switch_TF, Transien
 ```
 
 
-- hESC DATASET
-```
-###step 1 Known data acquisition
-library(stats)
-library(entropy)
-library("RColorBrewer")
-data(scExp_hESC)
-data(pesudo_hESC)
-data(TF_human)
-TF_Human=(TF_human)[,1]
-scExp_hESC_TF=scExp_hESC[intersect(rownames(scExp_hESC),TF_Human),order(pesudo_hESC[,1],decreasing = F)]
+### hESC DATASET
+  
+#### Step 1: Load Required Libraries
 
-###step 2 Screem candidate cell fate determinants
-Switch_test_hESC=Switch_nls(scExp_hESC_TF)
-Tansient_test_hESC=Tansient_nls(scExp_hESC_TF)
-Pro_screen_TFs=Screen_TF(Switch_test_hESC,Tansient_test_hESC,top_n=20)
+```r
+# Load the required libraries
+library(BSFate)
+library(minpack.lm)  
+library(dplyr)
+library(tidyr)
+library(tidyverse)
+library(dyno)
+library(R.matlab)
+library(deSolve)
+library(sindyr)
+library(nleqslv)
+library(numDeriv)
+library(magicfor)
+library(car)
+library(mgcv)
+library(clusterProfiler)
+library(STRINGdb)
+library(igraph)
+library(ggraph)
 ```
-![tupian5_1](./image/hotplot_hESC.jpg)
-![tupian5_2](./image/switch_transient_TF_hESC.jpg)
 
-```
-####step 3 Calculate the significance scores
-Hs_switch=Pro_screen_TFs[,1]
-Hs_transient=Pro_screen_TFs[,2]
-SignificanceScore=get_SignificanceScore(scExp_hESC_TF,Hs_switch,Hs_transient,0.1)
+#### Step 2: Read Data
 
-####step 4 Order cell fate determinants
-BSfate_TFs=get_singleTF_BSfate_rank(SignificanceScore)
+```r
+# Load data
+load("scExp_mESC.RData")
+load("pesudo_mESC.RData")
+
+# Convert to matrix format
+pesudo_mESC = as.matrix(pesudo_mESC)
+scExp_mESC = as.matrix(scExp_mESC)
+
+# Combine pseudo-time data with expression data
+scExp_mESC <- rbind(pesudo_mESC[, 1], scExp_mESC)
+
+# Order the columns by the pseudo-time
+scExp_mESC = scExp_mESC[, order(scExp_mESC[1, ])]
+
+# Load transcription factor data
+TF_mouse = read.table("TF_mouse.txt")
+TF_mouse = TF_mouse[, 1]
+
+# Subset the expression data based on common transcription factors
+scExp_mESC = scExp_mESC[intersect(TF_mouse, rownames(scExp_mESC)), ]
 ```
-![tupian6_1](./image/score_hESC.jpg)
-![tupian6_2](./image/results_hESC.jpg)
+
+#### Step 3: Data Preprocessing
+
+```r
+# Calculate row variances
+row_variances <- apply(scExp_mESC, 1, var)
+
+# Filter out rows with low variance
+scExp_mESC <- scExp_mESC[row_variances >= 0.03, ]
+
+# Display the dimensions of the filtered data
+dim(scExp_mESC)
 ```
-Following are comparison of BSFate with Monocle3-DE, tradeSeq, ImpulseDE2, and scFates, on astrocyte branch. The precision is plotted as a function of the number of top-ranked genes involved in the four ground truth gene sets. And the prioritization of driver regulators predicted by BSFate. TFs are sorted in descending order according to their significance sores. When TFs are annotated within the ground truth sets, they are connected.
+
+#### Step 4: Pre-screening Candidate Genes
+
+```r
+# Perform switch and transient tests
+Switch_test_mESC = Switch_nls(scExp_mESC)
+Transient_test_mESC = Transient_nls(scExp_mESC)
+
+# Select top N candidate genes
+top_n = 30
+Pro_screen_TFs = Screen_TF(Switch_test_mESC, Transient_test_mESC, top_n)
+
+# Extract the unique switch and transient transcription factors
+Switch_TF = unique(Pro_screen_TFs[, 1])
+Transient_TF = unique(Pro_screen_TFs[, 2])
 ```
-![tupian7_1](./image/other_DE_compare_hESC.jpg)
-![tupian7_2](./image/GO_results_hESC.jpg)
+
+#### Step 5: Cell Fate Driver Gene Identification
+
+```r
+# Identify bistable circuit genes
+bistable_circuitGenes = get_bistable_circuitGenes(scExp_mESC, Switch_TF, Transient_TF)
+
+# Identify driver genes from the bistable circuit genes
+driver_genes = get_diverGenes(bistable_circuitGenes)
+```
+
+#### Step 6: Gene Modules Identification
+
+```r
+# Identify gene modules associated with cell fate
+Gene_modules = modulePlot(scExp_mESC, driver_genes)
+```
+
+#### Step 7: Gene Modules Analysis
+
+```r
+# Analyze the gene modules
+module_analysis = get_moduleAnalysis(scExp_mESC, Gene_modules)
+```
+
 
 ## **Input** **files**
 
