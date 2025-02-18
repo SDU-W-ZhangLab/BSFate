@@ -29,9 +29,9 @@ This plot shows how different initial conditions converge toward distinct stable
 ## **Installation**
 We recommend installing the CytoTRACE 2 package using the devtools package from the R console. If you do not have devtools installed, you can install it by running install.packages("devtools") in the R console.
 ```
-devtools::install_github("SDU-W-Zhanglab/BSfate")
+devtools::install_github("SDU-W-Zhanglab/BSFate")
 
-library(BSfate)
+library(BSFate)
 ```
 
 ## **Running** **BSfate**
@@ -51,31 +51,67 @@ The following shows specific applications on simulated data and two sets of real
 
 The switch gene and transient gene of simulated data are used as known data here because of the simple branching of simulated data. Below, we will take Astrocyte lineage as an example.
 
-![GRN_simulation_A](./image/GRN_simulation_A.jpg)
-![PCA_simulation_A](./image/PCA_simulation_A.jpg)
+![image](https://github.com/user-attachments/assets/07227edc-ca28-406e-a11e-c8e8a60189b7)
+![image](https://github.com/user-attachments/assets/22846047-128b-45bc-a402-8862fcbd4654)
+
+
+
+
+### Step 1 and Step 2: Known Data Acquisition
+
+```r
+# Load required libraries
+library(minpack.lm)  
+library(dplyr)
+library(tidyr)
+library(tidyverse) 
+library(dyno)
+library(R.matlab)
+library(deSolve)
+library(sindyr)
+library(nleqslv)
+library(numDeriv)  
+library(magicfor)
+library(car) 
+library(mgcv)  
+library(ggraph)
+library(deSolve)
+library(BSFate)
+library(circlize)
+library(ComplexHeatmap)
+
+# Load the astrocyte expression data
+astrocyte_exprs_mat <- t(read.table("data/astrocyte_exprs_mat.txt"))
+
+# Define transcription factors
+Switch_TF = c("Scl", "Aldh1L", "Hes5", "Stat3")
+Transient_TF = c("Olig2", "Sox8", "Myt1L", "Mash1", "Brn2", "Zic1", "Tuj1")
 ```
-# Astrocyte lineage
 
-###step 1 and step 2 Known data acquisition
-library(stats)
-library(entropy)
-library("RColorBrewer")
-data(astrocyte)
-astrocyte_exprs = t(as.matrix(astrocyte))
-Switch__TF=c("Hes5","Scl","Stat3","Aldh1L")
-Transient_TF=c("Mash1","Zic1","Brn2","Tuj1","Olig2","Myt1L","Sox8")
+### Step 3: Cell Fate Driver Gene Identification
 
-###step 3 Calculate the significance scores
-SignificanceScore=get_SignificanceScore(astrocyte_exprs,Switch__TF,Transient_TF,0)
+```r
+# Perform bistable circuit test to identify potential driver genes
+ODE_pair_results = get_bistable_circuitTest(astrocyte_exprs_mat, Switch_TF, Transient_TF)
 
-###step 4 Order cell fate determinants
-BSfate_TFs=get_singleTF_BSfate_rank(SignificanceScore)
-
+# Identify driver genes from the results
+driver_genes <- get_diverGenes(ODE_pair_results)
 ```
-The following is the presentation of TF's significance score results and performance
 
-![tupian4_1](./image/results_simulation_A.jpg)
-![tupian4_2](./image/other_DE_compare_A.jpg)
+### Step 4: Gene Modules Identification
+
+```r
+# Identify gene modules associated with cell fate
+Gene_modules <- modules_identification_A(astrocyte_exprs_mat)
+```
+
+### Step 5: Gene Modules Analysis
+
+```r
+# Perform analysis on gene modules with respect to transcription factors
+module_analysis <- get_moduleAnalysis_A(astrocyte_exprs_mat, Switch_TF, Transient_TF)
+```
+
 
 - hESC DATASET
 ```
@@ -128,7 +164,7 @@ The output of BSfate is TFs and significance score ranking.
 
 ## **Authors**
 
-BSfate was developed in the Zhang lab by Naiqian Zhang,Wenchao Xiu,Yong Zhang,Yumiao Hou,Junchao Wang.
+BSFate was developed in the Zhang lab by Naiqian Zhang,Yumiao Hou, Wenchao Xiu, Junchao Wang, Ling Sun, Yisheng Huang, Yong Zhang, Naiqian Zhang
 ## **Contact**
 
 If you have any questions, please contact the BSfate team at nqzhang@email.sdu.edu.cn
