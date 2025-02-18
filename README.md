@@ -51,8 +51,7 @@ The following shows specific applications on simulated data and two sets of real
 
 The switch gene and transient gene of simulated data are used as known data here because of the simple branching of simulated data. Below, we will take Astrocyte lineage as an example.
 
-![image](https://github.com/user-attachments/assets/07227edc-ca28-406e-a11e-c8e8a60189b7)
-![image](https://github.com/user-attachments/assets/22846047-128b-45bc-a402-8862fcbd4654)
+![S_1_画板 1](https://github.com/user-attachments/assets/1e1c4c9c-ec1c-4cdd-99fe-8965ffd00013)
 
 
 
@@ -104,6 +103,7 @@ driver_genes <- get_diverGenes(ODE_pair_results)
 # Identify gene modules associated with cell fate
 Gene_modules <- modules_identification_A(astrocyte_exprs_mat)
 ```
+![image](https://github.com/user-attachments/assets/fb3903b5-ee8b-4ee8-aba6-d76742584415)
 
 #### Step 5: Gene Modules Analysis
 
@@ -111,6 +111,8 @@ Gene_modules <- modules_identification_A(astrocyte_exprs_mat)
 # Perform analysis on gene modules with respect to transcription factors
 module_analysis <- get_moduleAnalysis_A(astrocyte_exprs_mat, Switch_TF, Transient_TF)
 ```
+![image](https://github.com/user-attachments/assets/974eb456-c1a4-450c-b528-99aebab426b5)
+
 
 
 ### hESC DATASET
